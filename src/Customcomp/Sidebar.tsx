@@ -1,4 +1,3 @@
-import { cn } from "@/lib/utils"
 import { LayoutDashboard, Users, ClipboardList, Settings, HelpCircle } from 'lucide-react'
 
 const sidebarItems = [

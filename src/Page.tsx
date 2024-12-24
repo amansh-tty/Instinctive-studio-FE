@@ -10,6 +10,7 @@ import {
 import { StudentsTable } from "@/Customcomp/Students-table";
 import { supabase } from './supabase/supabaseClient';
 
+
 interface Student {
   name: string;
   cohort: string;
@@ -21,7 +22,6 @@ interface Student {
 
 export default function StudentsPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [studentData, setStudentData] = useState<Student[]>([]);
   const [formData, setFormData] = useState<Student>({
     name: '',
     cohort: '',
@@ -40,7 +40,7 @@ export default function StudentsPage() {
   // Handle adding student
 
   async function addStudent(formData:any) {
-    const { data, error } = await supabase
+    const { error } = await supabase
     
   .from('students')
   .insert([
@@ -56,11 +56,7 @@ export default function StudentsPage() {
   
     addStudent(formData)
 
-    setStudentData(prevStudentData => [
-      ...prevStudentData, 
-      formData 
-
-    ]);
+   
 
     setFormData({
       name: '',
@@ -101,7 +97,7 @@ export default function StudentsPage() {
         <Button onClick={() => setIsModalOpen(true)}>Add new Student</Button>
       </div>
 
-      <StudentsTable data={studentData as any} />
+      <StudentsTable  />
 
       {isModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">

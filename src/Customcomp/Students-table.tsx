@@ -20,7 +20,7 @@ import {
 interface Student {
   student_name: string; // Primary Key
   cohort: string;
-  courses: string[];
+  courses: string;
   date_joined: string;
   last_login: string;
   status: "active" | "inactive";
@@ -32,13 +32,7 @@ export function StudentsTable() {
   const [selectedStudent, setSelectedStudent] = useState<Student>()
   const [updatePayload, setUpdatePayload] = useState<Partial<Student>>({})
 
-  // Handle input changes
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    console.log(name,value)
-    // setSelectedStudent((prev)=>{..., })
-    setUpdatePayload({ ...updatePayload, [name]: value });
-  };
+  
 
   const updateCallback = () => {
     if (selectedStudent)
@@ -58,7 +52,7 @@ export function StudentsTable() {
     const { error } = await supabase
       .from("students")
       .delete()
-      .eq("student_name", student_name); // Use 'student_name' as primary key
+      .eq("student_name", student_name);  
 
     if (error) {
       console.error("Error deleting student:", error.message);
@@ -76,16 +70,15 @@ export function StudentsTable() {
     const { error } = await supabase
       .from("students")
       .update(updatedData)
-      .eq("student_name", student_name); // Use 'student_name' as primary key
+      .eq("student_name", student_name);  
 
     if (error) {
       console.error("Error updating student:", error.message);
     } else {
-      getStudents(); // Refresh list after update
+      getStudents();  
     }
   }
 
-  // Fetch data on initial render
   useEffect(() => {
     getStudents();
   }, []);
@@ -106,7 +99,7 @@ export function StudentsTable() {
             <TableHead>Date Joined</TableHead>
             <TableHead>Last Login</TableHead>
             <TableHead>Status</TableHead>
-            <TableHead>Actions</TableHead> {/* New Actions Column */}
+            <TableHead>Actions</TableHead> 
           </TableRow>
         </TableHeader>
         <TableBody>
