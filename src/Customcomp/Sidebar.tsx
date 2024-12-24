@@ -37,7 +37,7 @@ export function Sidebar() {
   return (
     <div className="w-[240px] border-r bg-gray-50/40 px-3 py-4">
       <div className="mb-8 px-4">
-        <h2 className="text-xl font-bold">Quyl</h2>
+        <img src='images/Vector.png' alt='symbol'/>
       </div>
       <nav className="space-y-4">
         {sidebarItems.map((item, index) => (

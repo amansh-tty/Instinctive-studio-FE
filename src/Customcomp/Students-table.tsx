@@ -15,7 +15,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "@/Customcomp/ui/select";
 
 interface Student {
   student_name: string; // Primary Key
@@ -23,14 +23,20 @@ interface Student {
   courses: string;
   date_joined: string;
   last_login: string;
-  status: "active" | "inactive";
+  status: boolean//"active" | "inactive";
 }
 
-export function StudentsTable() {
+interface TableFilter{
+  courseFilter: string
+  cohortFilter: string
+}
+
+export function StudentsTable(props:TableFilter) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [studentsList, setStudentsList] = useState<Student[]>([]);
   const [selectedStudent, setSelectedStudent] = useState<Student>()
   const [updatePayload, setUpdatePayload] = useState<Partial<Student>>({})
+
 
   
 
@@ -38,16 +44,15 @@ export function StudentsTable() {
     if (selectedStudent)
      { console.log(updatePayload)
       handleUpdate(selectedStudent.student_name, updatePayload)}
+    setIsModalOpen(false)
   }
 
-  // Fetch students from Supabase
   async function getStudents() {
-    const { data, error } = await supabase.from("students").select("*");
+    const { data, error } = await supabase.from("students").select("*").eq('cohort', props.cohortFilter).eq('courses', props.courseFilter)
     if (error) console.error("Error fetching students:", error);
     setStudentsList(data ?? []);
   }
 
-  // Handle Delete Student by 'student_name'
   async function handleDelete(student_name: string) {
     const { error } = await supabase
       .from("students")
@@ -57,14 +62,12 @@ export function StudentsTable() {
     if (error) {
       console.error("Error deleting student:", error.message);
     } else {
-      // Remove deleted student from local state
       setStudentsList(
         studentsList.filter((student) => student.student_name !== student_name)
       );
     }
   }
 
-  // Handle Update Student Status
   async function handleUpdate(student_name: string, updatedData: Partial<Student>) {
     console.log(updatedData)
     const { error } = await supabase
@@ -81,7 +84,7 @@ export function StudentsTable() {
 
   useEffect(() => {
     getStudents();
-  }, []);
+  }, [props.cohortFilter, props.courseFilter]);
 
   // get selected stu
   useEffect(() => {
@@ -90,6 +93,8 @@ export function StudentsTable() {
 
   return (
     <>
+    <div className="w-full h-full">
+
       <Table>
         <TableHeader>
           <TableRow>
@@ -127,7 +132,7 @@ export function StudentsTable() {
               <TableCell>{student.last_login}</TableCell>
               <TableCell>
                 <span
-                  className={`inline-block h-2 w-2 rounded-full ${student.status === "active" ? "bg-green-500" : "bg-red-500"
+                  className={`inline-block h-2 w-2 rounded-full ${student.status ? "bg-green-500" : "bg-red-500"
                     }`}
                 />
               </TableCell>
@@ -174,7 +179,6 @@ export function StudentsTable() {
                   disabled
                   placeholder="Enter Student name"
                   value={selectedStudent.student_name}
-                  // onChange={handleInputChange}
                   className=" text-gray-200 mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
                 />
               </div>
@@ -205,24 +209,38 @@ export function StudentsTable() {
               <div>
                 <label className="block text-sm font-medium text-gray-700">Date Joined</label>
                 <input
-                  type="datetime-local"
-                  name="dateJoined"
-                  placeholder="Enter Date Joined"
-                  value={updatePayload.date_joined ?? selectedStudent.date_joined}
-                  onChange={(e) => setUpdatePayload({ ...updatePayload, date_joined: e.target.value })}
-                  className="text-gray-200 mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
-                />
+                    type="datetime-local"
+                    name="dateJoined"
+                    placeholder="Enter Date Joined"
+                    value={
+                      updatePayload.date_joined
+                        ? new Date(updatePayload.date_joined).toISOString().slice(0, 16) // Format updatePayload
+                        : new Date(selectedStudent.date_joined).toISOString().slice(0, 16) // Format selectedStudent
+                    }
+                    onChange={(e) =>
+                      setUpdatePayload({ ...updatePayload, date_joined: e.target.value })
+                    }
+                    className="text-gray-200 mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                  />
+
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700">Last Login</label>
                 <input
-                  type="datetime-local"
-                  name="lastLogin"
-                  placeholder="Enter Last Login"
-                  value={updatePayload.last_login ?? selectedStudent.last_login}
-                  onChange={(e) => setUpdatePayload({ ...updatePayload, last_login: e.target.value })}
-                  className="text-gray-200 mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
-                />
+                      type="datetime-local"
+                      name="lastLogin"
+                      placeholder="Enter Last Login"
+                      value={
+                        updatePayload.last_login
+                          ? new Date(updatePayload.last_login).toISOString().slice(0, 16) // Format updatePayload
+                          : new Date(selectedStudent.last_login).toISOString().slice(0, 16) // Format selectedStudent
+                      }
+                      onChange={(e) =>
+                        setUpdatePayload({ ...updatePayload, last_login: e.target.value })
+                      }
+                      className="text-gray-200 mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                    />
+
               </div>
 
               <div>
@@ -230,9 +248,9 @@ export function StudentsTable() {
                 <input
                   type="checkbox"
                   name="status"
-                  checked={updatePayload.status ?? selectedStudent.status === 'active' ? true : false}
-                  onChange={(e) => setUpdatePayload({ ...updatePayload, status: e.target.checked ? 'active' : 'inactive' })}
-                  className="mt-1"
+                  checked={updatePayload.status ?? selectedStudent.status ? true : false}
+                  onChange={(e) => setUpdatePayload({ ...updatePayload, status: e.target.checked ? true : false })}
+                  className="mt-1"  
                 />
               </div>
               <div className="flex justify-end gap-2">
@@ -244,6 +262,8 @@ export function StudentsTable() {
         </div>
 
       }
+    </div>
+
     </>
   );
 }
