@@ -9,7 +9,7 @@ import {
 } from "@/Customcomp/ui/select";
 import { StudentsTable } from "@/Customcomp/Students-table";
 import { supabase } from './supabase/supabaseClient';
-
+import { Plus } from 'lucide-react'
 
 interface Student {
   name: string;
@@ -95,7 +95,7 @@ export default function StudentsPage() {
             </SelectContent>
           </Select>
         </div>
-        <Button onClick={() => setIsModalOpen(true)}>Add new Student</Button>
+        <Button onClick={() => setIsModalOpen(true)}><Plus className="h-5 w-5" />Add new Student</Button>
       </div>
 
       <StudentsTable courseFilter={courseFilter} cohortFilter={cohortFilter}  />
@@ -148,8 +148,8 @@ export default function StudentsPage() {
                     placeholder="Enter Date Joined"
                     value={
                       formData.dateJoined
-                        ? new Date(formData.dateJoined).toISOString().slice(0, 16) // Properly formatted value
-                        : new Date().toISOString().slice(0, 16) // Set current datetime if empty
+                        ? new Date(formData.dateJoined).toISOString().slice(0, 16)  
+                        : new Date().toISOString().slice(0, 16)  
                     }
                     onChange={handleInputChange}
                     className="text-gray-700 mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
@@ -164,8 +164,8 @@ export default function StudentsPage() {
                     placeholder="Enter Last Login"
                     value={
                       formData.lastLogin
-                        ? new Date(formData.lastLogin).toISOString().slice(0, 16) // Format lastLogin value
-                        : '' // Default empty value
+                        ? new Date(formData.lastLogin).toISOString().slice(0, 16)  
+                        : ''  
                     }
                     onChange={handleInputChange}
                     className="text-gray-700 mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
