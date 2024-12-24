@@ -141,30 +141,36 @@ export default function StudentsPage() {
                 </Select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700">Date Joined</label>
+                <label className="block text-sm font-medium white">Date Joined</label>
                 <input
-                  type="datetime-local"
-                  name="dateJoined"
-                  placeholder="Enter Date Joined"
-                  value={formData.dateJoined
-                    ? new Date(formData.dateJoined).toISOString().slice(0, 16) 
-                    : ''}
-                  onChange={handleInputChange}
-                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
-                />
+                    type="datetime-local"
+                    name="dateJoined"
+                    placeholder="Enter Date Joined"
+                    value={
+                      formData.dateJoined
+                        ? new Date(formData.dateJoined).toISOString().slice(0, 16) // Properly formatted value
+                        : new Date().toISOString().slice(0, 16) // Set current datetime if empty
+                    }
+                    onChange={handleInputChange}
+                    className="text-gray-700 mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                  />
+
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700">Last Login</label>
+                <label className="block text-sm font-medium white">Last Login</label>
                 <input
-                  type="datetime-local"
-                  name="lastLogin"
-                  placeholder="Enter Last Login"
-                  value={formData.dateJoined
-                    ? new Date(formData.dateJoined).toISOString().slice(0, 16) 
-                    : ''}
-                  onChange={handleInputChange}
-                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
-                />
+                    type="datetime-local"
+                    name="lastLogin"
+                    placeholder="Enter Last Login"
+                    value={
+                      formData.lastLogin
+                        ? new Date(formData.lastLogin).toISOString().slice(0, 16) // Format lastLogin value
+                        : '' // Default empty value
+                    }
+                    onChange={handleInputChange}
+                    className="text-gray-700 mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                  />
+
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700">Status</label>
